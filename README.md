@@ -11,12 +11,12 @@ Users find a venue (nearby or by search), pick a category, rate it, add a note, 
 |---|---|---|
 | Sébastien Violette | A: App shell and UI | Theme, navigation, Splash, Home, List, Detail UI, strings, dark mode |
 | Ana Cericatto | B: Local data | SQLite, repository, CRUD, validation, New check-in form |
-| Vraj Joshi | C: Firebase | Firebase Auth, Firestore sync, security rules, Login and Sign up |
+| Vraj Joshi | C: Firebase | Firebase Auth, Firestore sync, security rules, Login |
 | Daniel Peleg | D: API and map | Geoapify client, venue search, Google Maps screen, location permission |
 
 ## Features
 
-- Splash, Login, Sign up, Home, Map, Check-ins list, Check-in detail, New/Edit check-in
+- Splash, Login, Home, Map, Check-ins list, Check-in detail, New/Edit check-in
 - Categories: Restaurant, Event, Other
 - Rating (1 to 5) and a note of up to 200 characters, with input validation
 - Create, read, update and delete check-ins (SQLite)
