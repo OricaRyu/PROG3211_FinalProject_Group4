@@ -1,3 +1,20 @@
 <resources>
-    <string name="app_name">FinalProjectGroup4</string>
+    <!-- App -->
+    <string name="app_name">Spot</string>
+    <string name="splash_tagline">Check in. Remember. Revisit.</string>
+
+    <!-- Bottom navigation tabs -->
+    <string name="tab_home">Home</string>
+    <string name="tab_map">Map</string>
+    <string name="tab_checkins">Check-ins</string>
+
+    <!-- Screen titles -->
+    <string name="title_login">Log in</string>
+    <string name="title_signup">Sign up</string>
+    <string name="title_home">Spot</string>
+    <string name="title_map">Map</string>
+    <string name="title_checkins">Check-ins</string>
+    <string name="title_checkin_detail">Check-in</string>
+    <string name="title_new_checkin">New check-in</string>
+    <string name="title_edit_checkin">Edit check-in</string>
 </resources>
