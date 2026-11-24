@@ -17,3 +17,6 @@ local.properties
 /docs/*.py
 .vscode
 
+
+# Android Studio / IntelliJ settings are personal; each developer regenerates them
+.idea/
