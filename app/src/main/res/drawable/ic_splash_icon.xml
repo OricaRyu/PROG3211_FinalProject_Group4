@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    System splash icon: the same artwork as ic_spot_logo, drawn at 2x in the middle of the
+    288dp splash icon area (inside the 192dp safe circle). The Compose SplashScreen draws
+    ic_spot_logo at 144dp in the same spot, so the hand-off from system splash to ours is seamless.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="288dp"
+    android:height="288dp"
+    android:viewportWidth="288"
+    android:viewportHeight="288">
+    <group
+        android:scaleX="2"
+        android:scaleY="2"
+        android:translateX="72"
+        android:translateY="72">
+        <group
+            android:translateX="-18"
+            android:translateY="-16">
+            <path
+                android:pathData="M39,82 a15,4.5 0 1,0 30,0 a15,4.5 0 1,0 -30,0"
+                android:strokeColor="@color/spot_logo_accent"
+                android:strokeAlpha="0.9"
+                android:strokeWidth="3" />
+            <path
+                android:fillColor="@color/spot_logo_pin"
+                android:pathData="M54,83 C48,75 34,62 34,46 A20,20 0 1,1 74,46 C74,62 60,75 54,83 Z" />
+            <path
+                android:fillColor="@color/spot_logo_inner"
+                android:pathData="M43,46 a11,11 0 1,0 22,0 a11,11 0 1,0 -22,0" />
+            <path
+                android:pathData="M48.5,46.5 L52.5,50.5 L60,42.5"
+                android:strokeColor="@color/spot_logo_pin"
+                android:strokeLineCap="round"
+                android:strokeLineJoin="round"
+                android:strokeWidth="3.6" />
+            <path
+                android:fillColor="@color/spot_logo_accent"
+                android:pathData="M78,17 Q79,23 85,24 Q79,25 78,31 Q77,25 71,24 Q77,23 78,17 Z" />
+        </group>
+    </group>
+</vector>

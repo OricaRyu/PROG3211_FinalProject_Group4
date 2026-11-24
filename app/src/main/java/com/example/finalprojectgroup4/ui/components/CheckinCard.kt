@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.finalprojectgroup4.R
@@ -67,11 +68,14 @@ fun CheckinCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Avatar: the venue's first letter on its category colour
+            // Avatar: the venue's first letter on its category colour.
+            // Decorative only: hidden from screen readers so they don't read the letter
+            // before the venue name.
             Box(
                 modifier = Modifier
                     .size(40.dp)
-                    .background(categoryColors.container, CircleShape),
+                    .background(categoryColors.container, CircleShape)
+                    .clearAndSetSemantics {},
                 contentAlignment = Alignment.Center
             ) {
                 Text(

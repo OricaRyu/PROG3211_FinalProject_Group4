@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.FinalProjectGroup4" parent="android:Theme.Material.Light.NoActionBar" />
+    <!--
+        Window theme (light). Android draws the window from this before Compose starts,
+        so its background must match our Compose theme to avoid a flash.
+        Dark version: values-night/themes.xml
+    -->
+    <style name="Theme.FinalProjectGroup4" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/spot_window_background</item>
+    </style>
+
+    <!--
+        Starting theme, used only while the app launches (set on MainActivity in the manifest).
+        Shows our logo on our background, then switches to Theme.FinalProjectGroup4.
+        Colours resolve to light or dark automatically through values / values-night.
+    -->
+    <style name="Theme.FinalProjectGroup4.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/spot_window_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_icon</item>
+        <item name="postSplashScreenTheme">@style/Theme.FinalProjectGroup4</item>
+    </style>
 </resources>

@@ -7,4 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Spot logo colours, light mode (from our light colour scheme).
+         Dark-mode versions are in values-night/colors.xml. -->
+    <color name="spot_logo_pin">#FF4C5C92</color>     <!-- primaryLight -->
+    <color name="spot_logo_inner">#FFFFFFFF</color>   <!-- onPrimaryLight -->
+    <color name="spot_logo_accent">#FF755470</color>  <!-- tertiaryLight -->
+
+    <!-- Window and system splash background; matches the Compose theme's background. -->
+    <color name="spot_window_background">#FFFAF8FF</color>  <!-- backgroundLight -->
 </resources>

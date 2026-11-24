@@ -180,7 +180,8 @@ private fun SpotBottomBar(
             NavigationBarItem(
                 selected = currentRoute == tab.route,
                 onClick = { onTabSelected(tab) },
-                icon = { Icon(tab.icon, contentDescription = label) },
+                // The label below already names the tab, so TalkBack shouldn't read it twice
+                icon = { Icon(tab.icon, contentDescription = null) },
                 label = { Text(label) }
             )
         }
