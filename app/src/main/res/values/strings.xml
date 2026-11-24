@@ -36,11 +36,32 @@
     <string name="action_open_sample">Open sample check-in</string>
 
     <!-- Temporary placeholder messages (remove as each screen is built) -->
-    <string name="placeholder_home">Nearby venues and your latest check-ins will appear here.</string>
     <string name="placeholder_map">The map of your check-ins and nearby venues will appear here.</string>
     <string name="placeholder_checkins">Your check-ins will be listed here.</string>
     <string name="placeholder_detail">Details for check-in %1$s will appear here.</string>
     <string name="placeholder_form">The check-in form will appear here.</string>
     <string name="placeholder_login">The login form will appear here.</string>
     <string name="placeholder_signup">The sign up form will appear here.</string>
+
+    <!-- Home -->
+    <string name="home_nearby_now">Nearby now</string>
+    <string name="home_latest_checkins">Latest check-ins</string>
+    <string name="home_powered_by_geoapify">Powered by Geoapify</string>
+    <string name="home_no_nearby">No venues found nearby.</string>
+    <string name="home_no_checkins">No check-ins yet. Tap + to add your first one.</string>
+    <string name="action_check_in">Check in</string>
+
+    <!-- Sync status -->
+    <string name="status_synced">Synced</string>
+    <string name="status_not_synced">Not synced</string>
+
+    <!-- Categories -->
+    <string name="category_restaurant">Restaurant</string>
+    <string name="category_event">Event</string>
+    <string name="category_other">Other</string>
+
+    <!-- Formats -->
+    <string name="format_subtitle">%1$s · %2$s</string>
+    <string name="distance_meters">%1$d m</string>
+    <string name="distance_km">%1$.1f km</string>
 </resources>

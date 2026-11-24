@@ -101,6 +101,8 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
             composable(Routes.HOME) {
                 HomeScreen(
                     onAddCheckin = { navController.navigate(Routes.NEW) },
+                    // TODO (Track B/D): pass the venue to New check-in so its fields are filled in
+                    onVenueCheckIn = { navController.navigate(Routes.NEW) },
                     onCheckinClick = { id -> navController.navigate(Routes.detail(id)) },
                     onLogout = {
                         navController.navigate(Routes.LOGIN) {
