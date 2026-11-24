@@ -279,7 +279,7 @@ fun AppTheme(
 @Composable
 fun FinalProjectGroup4Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     AppTheme(
