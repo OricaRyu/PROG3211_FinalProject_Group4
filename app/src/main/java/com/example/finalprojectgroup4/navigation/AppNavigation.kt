@@ -1,11 +1,13 @@
 package com.example.finalprojectgroup4.navigation
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,6 +36,10 @@ import com.example.finalprojectgroup4.features.splash.SplashScreen
  * Screens never receive the NavController. They get lambdas such as onAddCheckin,
  * and this file decides where each one goes.
  *
+ * Layout: a plain Column (no Scaffold here). The NavHost fills the space and the bottom bar
+ * sits under it on the three tabs. Each screen owns its own Scaffold and window insets, so
+ * screens that want to draw edge-to-edge (Splash, and later the Map) can.
+ *
  * Kind: @Composable function. Owner: Track A (Sébastien).
  */
 @Composable
@@ -43,24 +49,19 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
     val currentRoute = backStackEntry?.destination?.route
     val showBottomBar = BottomTab.entries.any { it.route == currentRoute }
 
-    Scaffold(
-        bottomBar = {
-            if (showBottomBar) {
-                SpotBottomBar(
-                    currentRoute = currentRoute,
-                    onTabSelected = { tab -> navController.navigateToTab(tab.route) }
-                )
-            }
-        }
-    ) { innerPadding ->
+    Column(modifier = Modifier.fillMaxSize()) {
         NavHost(
             navController = navController,
             startDestination = Routes.SPLASH,
-            // consumeWindowInsets stops each screen's own Scaffold from adding
-            // the status bar and navigation bar padding a second time
             modifier = Modifier
-                .padding(innerPadding)
-                .consumeWindowInsets(innerPadding)
+                .weight(1f)
+                // When the bottom bar is showing, it already pads itself above the system
+                // navigation bar, so the screen above it must not add that space again.
+                // The status bar inset is never touched here; each screen handles its own.
+                .then(
+                    if (showBottomBar) Modifier.consumeWindowInsets(WindowInsets.navigationBars)
+                    else Modifier
+                )
         ) {
             composable(Routes.SPLASH) {
                 SplashScreen(
@@ -154,6 +155,13 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
                     onSaved = { navController.popBackStack() }
                 )
             }
+        }
+
+        if (showBottomBar) {
+            SpotBottomBar(
+                currentRoute = currentRoute,
+                onTabSelected = { tab -> navController.navigateToTab(tab.route) }
+            )
         }
     }
 }
