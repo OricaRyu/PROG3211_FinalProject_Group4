@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Window theme (dark): same as values/themes.xml, but with a dark parent and background. -->
+    <style name="Theme.FinalProjectGroup4" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/spot_window_background</item>
+    </style>
+</resources>

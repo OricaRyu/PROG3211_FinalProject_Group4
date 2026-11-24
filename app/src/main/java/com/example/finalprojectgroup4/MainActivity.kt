@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.finalprojectgroup4.navigation.AppNavigation
 import com.example.finalprojectgroup4.ui.theme.FinalProjectGroup4Theme
 
@@ -15,6 +16,9 @@ import com.example.finalprojectgroup4.ui.theme.FinalProjectGroup4Theme
  */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Shows the system splash (our logo on our background) while the app starts, then
+        // switches to the normal theme. Must be called before super.onCreate.
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {

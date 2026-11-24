@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Themed (monochrome) launcher icon for Android 13+. The system tints every shape one colour,
+    so the inner circle is cut out of the pin (evenOdd) to keep the check mark visible.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        android:translateX="-4"
+        android:translateY="2">
+        <path
+            android:pathData="M39,82 a15,4.5 0 1,0 30,0 a15,4.5 0 1,0 -30,0"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeWidth="3" />
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:fillType="evenOdd"
+            android:pathData="M54,83 C48,75 34,62 34,46 A20,20 0 1,1 74,46 C74,62 60,75 54,83 Z M43,46 a11,11 0 1,0 22,0 a11,11 0 1,0 -22,0 Z" />
+        <path
+            android:pathData="M48.5,46.5 L52.5,50.5 L60,42.5"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:strokeWidth="3.6" />
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M78,17 Q79,23 85,24 Q79,25 78,31 Q77,25 71,24 Q77,23 78,17 Z" />
+    </group>
+</vector>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dark-mode versions of the logo colours (from our dark colour scheme). -->
+<resources>
+    <color name="spot_logo_pin">#FFB6C4FF</color>     <!-- primaryDark -->
+    <color name="spot_logo_inner">#FF1D2D61</color>   <!-- onPrimaryDark -->
+    <color name="spot_logo_accent">#FFE3BADA</color>  <!-- tertiaryDark -->
+
+    <!-- Window and system splash background; matches the Compose theme's background. -->
+    <color name="spot_window_background">#FF121318</color>  <!-- backgroundDark -->
+</resources>
