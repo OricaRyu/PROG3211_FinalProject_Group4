@@ -69,10 +69,14 @@ object SampleCheckinStore {
         )
     )
 
-    /** All check-ins that aren't deleted, newest first. Updates whenever one changes. */
+    /**
+     * All check-ins, in the order of the list above (written newest first). Updates whenever
+     * one changes. delete() removes rows outright, so none here are ever marked deleted.
+     * The real repository must do its own filtering and sorting.
+     */
     val checkins: StateFlow<List<Checkin>> = _checkins.asStateFlow()
 
-    /** One check-in by id, or null when it doesn't exist (or was deleted). */
+    /** One check-in by id, or null when it doesn't exist (or was removed). */
     fun observe(id: String): Flow<Checkin?> =
         _checkins.map { list -> list.firstOrNull { it.id == id } }
 

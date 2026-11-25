@@ -37,7 +37,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,9 +45,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finalprojectgroup4.R
 import com.example.finalprojectgroup4.data.model.Checkin
@@ -59,7 +63,6 @@ import com.example.finalprojectgroup4.ui.components.colors
 import com.example.finalprojectgroup4.ui.components.labelRes
 import com.example.finalprojectgroup4.ui.theme.FinalProjectGroup4Theme
 import java.util.Date
-import java.util.Locale
 
 /**
  * Mandatory Detail: one check-in with all its details, Edit, and Delete with a confirmation dialog.
@@ -72,21 +75,33 @@ import java.util.Locale
 @Composable
 fun CheckinDetailScreen(
     onBack: () -> Unit,
-    onEdit: () -> Unit,
+    onEdit: (checkinId: String) -> Unit,
     onDeleted: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CheckinDetailViewModel = viewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    // Stops collecting while the app is in the background
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isDeleted by viewModel.isDeleted.collectAsStateWithLifecycle()
 
+    // Leave once the check-in is deleted. The key only turns true once, so this pops
+    // exactly one screen even if Delete is confirmed again during the exit animation.
+    LaunchedEffect(isDeleted) {
+        if (isDeleted) onDeleted()
+    }
+
+    // dropUnlessResumed ignores Back and Edit once this screen starts leaving (its exit
+    // animation still shows the buttons). Without it, Back right after Delete would pop
+    // twice and also close the screen underneath.
     CheckinDetailContent(
         uiState = uiState,
-        onBack = onBack,
-        onEdit = onEdit,
-        onConfirmDelete = {
-            viewModel.delete()
-            onDeleted()
+        onBack = dropUnlessResumed(block = onBack),
+        // Edit the check-in that is actually shown, not an id read separately from the route
+        onEdit = dropUnlessResumed {
+            (uiState as? CheckinDetailUiState.Loaded)?.let { onEdit(it.checkin.id) }
         },
+        // Not guarded: confirming must always delete. Navigation happens in the effect above.
+        onConfirmDelete = viewModel::delete,
         modifier = modifier
     )
 }
@@ -345,9 +360,15 @@ private fun DeleteConfirmationDialog(
 
 /** Full date and time such as "Sun, Nov 8, 2026, 7:30 PM", in the phone's language and 12/24 h setting. */
 @Composable
-private fun formatDateTime(millis: Long): String = remember(millis) {
-    val pattern = DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEMMMdyyyyjmm")
-    DateFormat.format(pattern, Date(millis)).toString()
+private fun formatDateTime(millis: Long): String {
+    val locale = LocalConfiguration.current.locales[0]
+    // The user's 12/24 h toggle; the skeleton letter "j" would only use the locale's default
+    val is24Hour = DateFormat.is24HourFormat(LocalContext.current)
+    return remember(millis, locale, is24Hour) {
+        val skeleton = if (is24Hour) "EEEMMMdyyyyHmm" else "EEEMMMdyyyyhmm"
+        val pattern = DateFormat.getBestDateTimePattern(locale, skeleton)
+        DateFormat.format(pattern, Date(millis)).toString()
+    }
 }
 
 @Preview(name = "Light", showBackground = true)
