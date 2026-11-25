@@ -37,7 +37,6 @@
 
     <!-- Temporary placeholder messages (remove as each screen is built) -->
     <string name="placeholder_map">The map of your check-ins and nearby venues will appear here.</string>
-    <string name="placeholder_checkins">Your check-ins will be listed here.</string>
     <string name="placeholder_form">The check-in form will appear here.</string>
     <string name="placeholder_login">The login form will appear here.</string>
     <string name="placeholder_signup">The sign up form will appear here.</string>
@@ -74,4 +73,11 @@
     <string name="delete_dialog_title">Delete check-in?</string>
     <string name="delete_dialog_message">%1$s will be removed. This can\'t be undone.</string>
     <string name="action_cancel">Cancel</string>
+
+    <!-- Check-ins list -->
+    <string name="filter_all">All</string>
+    <string name="filter_restaurants">Restaurants</string>
+    <string name="filter_events">Events</string>
+    <string name="filter_other">Other</string>
+    <string name="list_empty_filtered">No check-ins in this category.</string>
 </resources>

@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -98,12 +100,12 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
                 )
             }
 
-            composable(Routes.HOME) {
+            composable(Routes.HOME) { entry ->
                 HomeScreen(
                     onAddCheckin = { navController.navigate(Routes.NEW) },
                     // TODO (Track B/D): pass the venue to New check-in so its fields are filled in
                     onVenueCheckIn = { navController.navigate(Routes.NEW) },
-                    onCheckinClick = { id -> navController.navigate(Routes.detail(id)) },
+                    onCheckinClick = { id -> navController.openDetail(from = entry, checkinId = id) },
                     onLogout = {
                         navController.navigate(Routes.LOGIN) {
                             // Clear the whole back stack so Back cannot return to signed-in screens
@@ -113,16 +115,16 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
                 )
             }
 
-            composable(Routes.MAP) {
+            composable(Routes.MAP) { entry ->
                 MapScreen(
-                    onCheckinClick = { id -> navController.navigate(Routes.detail(id)) }
+                    onCheckinClick = { id -> navController.openDetail(from = entry, checkinId = id) }
                 )
             }
 
-            composable(Routes.CHECKINS) {
+            composable(Routes.CHECKINS) { entry ->
                 CheckinListScreen(
                     onAddCheckin = { navController.navigate(Routes.NEW) },
-                    onCheckinClick = { id -> navController.navigate(Routes.detail(id)) }
+                    onCheckinClick = { id -> navController.openDetail(from = entry, checkinId = id) }
                 )
             }
 
@@ -195,5 +197,16 @@ private fun NavHostController.navigateToTab(route: String) {
         popUpTo(Routes.HOME) { saveState = true }
         launchSingleTop = true
         restoreState = true
+    }
+}
+
+/**
+ * Opens a check-in's Detail screen, but only while the screen it's tapped from is fully
+ * showing (RESUMED). A quick double tap would otherwise push two Detail screens, so Back
+ * (or Delete) would land on a second copy instead of returning to the list.
+ */
+private fun NavHostController.openDetail(from: NavBackStackEntry, checkinId: String) {
+    if (from.lifecycle.currentState == Lifecycle.State.RESUMED) {
+        navigate(Routes.detail(checkinId))
     }
 }
