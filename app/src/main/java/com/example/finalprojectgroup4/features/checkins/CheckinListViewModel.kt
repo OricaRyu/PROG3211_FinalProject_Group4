@@ -1,10 +1,11 @@
 package com.example.finalprojectgroup4.features.checkins
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finalprojectgroup4.data.model.Category
-import com.example.finalprojectgroup4.data.sample.SampleCheckinStore
+import com.example.finalprojectgroup4.data.repository.CheckinRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -19,22 +20,24 @@ import kotlinx.coroutines.flow.stateIn
  * The selected chip lives in the SavedStateHandle, so it survives the app being killed
  * in the background (a plain MutableStateFlow would reset to "All").
  *
- * Kind: class extending ViewModel. Owner: Track A (Sébastien).
+ * It is an AndroidViewModel because CheckinRepository needs the app's Context to open the database.
+ *
+ * Kind: class extending AndroidViewModel. Owner: Track A (Sébastien), data from Track B.
  */
-class CheckinListViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
+class CheckinListViewModel(
+    application: Application,
+    private val savedStateHandle: SavedStateHandle
+) : AndroidViewModel(application) {
+
+    private val repository = CheckinRepository.getInstance(application)
 
     // null means "All"
     private val selectedCategory: StateFlow<Category?> =
         savedStateHandle.getStateFlow(KEY_CATEGORY, null)
 
-    // TODO (M3): read from CheckinRepository (Track B) instead of SampleCheckinStore.
-    //  The repository's query must sort by createdAt, newest first: this ViewModel
-    //  shows whatever order it receives.
+    // The repository already leaves out deleted check-ins and sorts newest first
     val uiState: StateFlow<CheckinListUiState> =
-        combine(SampleCheckinStore.checkins, selectedCategory) { checkins, category ->
-            // A soft-deleted check-in (deleted = true, waiting to sync) counts as gone,
-            // the same way the Detail screen treats it
-            val all = checkins.filterNot { it.deleted }
+        combine(repository.checkins, selectedCategory) { all, category ->
             CheckinListUiState(
                 checkins = if (category == null) all else all.filter { it.category == category },
                 selectedCategory = category,

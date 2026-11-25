@@ -1,10 +1,11 @@
 package com.example.finalprojectgroup4.features.checkins
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finalprojectgroup4.data.model.Checkin
-import com.example.finalprojectgroup4.data.sample.SampleCheckinStore
+import com.example.finalprojectgroup4.data.repository.CheckinRepository
 import com.example.finalprojectgroup4.navigation.Routes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 /**
  * Loads one check-in for the Detail screen and deletes it.
@@ -19,9 +21,16 @@ import kotlinx.coroutines.flow.stateIn
  * The check-in id comes from the route "checkin/{id}": Navigation puts route arguments
  * into the SavedStateHandle automatically, so the screen doesn't have to pass it in.
  *
- * Kind: class extending ViewModel. Owner: Track A (Sébastien).
+ * It is an AndroidViewModel because CheckinRepository needs the app's Context to open the database.
+ *
+ * Kind: class extending AndroidViewModel. Owner: Track A (Sébastien), data from Track B.
  */
-class CheckinDetailViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
+class CheckinDetailViewModel(
+    application: Application,
+    savedStateHandle: SavedStateHandle
+) : AndroidViewModel(application) {
+
+    private val repository = CheckinRepository.getInstance(application)
 
     private val checkinId: String = savedStateHandle[Routes.ARG_ID] ?: ""
 
@@ -37,16 +46,14 @@ class CheckinDetailViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     // after Delete instead of flashing "not found"
     private var lastLoaded: Checkin? = null
 
-    // TODO (M3): read from CheckinRepository (Track B) instead of SampleCheckinStore
     val uiState: StateFlow<CheckinDetailUiState> =
-        combine(SampleCheckinStore.observe(checkinId), _isDeleted) { checkin, isDeleted ->
-            // A soft-deleted check-in (deleted = true, waiting to sync) counts as gone
-            val visible = checkin?.takeIf { !it.deleted }
+        combine(repository.observe(checkinId), _isDeleted) { checkin, isDeleted ->
+            // The repository already returns null for a deleted check-in
             val shown = lastLoaded
             when {
-                visible != null && !isDeleted -> {
-                    lastLoaded = visible
-                    CheckinDetailUiState.Loaded(visible)
+                checkin != null && !isDeleted -> {
+                    lastLoaded = checkin
+                    CheckinDetailUiState.Loaded(checkin)
                 }
                 isDeleted && shown != null -> CheckinDetailUiState.Loaded(shown)
                 else -> CheckinDetailUiState.NotFound
@@ -63,7 +70,7 @@ class CheckinDetailViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     fun delete() {
         if (_isDeleted.value) return // already deleted; ignore repeat taps
         _isDeleted.value = true
-        // TODO (M3): CheckinRepository.delete (marks it deleted, then syncs to Firestore)
-        SampleCheckinStore.delete(checkinId)
+        // Soft delete in Room; Track C's sync sends it to Firestore later
+        viewModelScope.launch { repository.delete(checkinId) }
     }
 }
