@@ -129,12 +129,10 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
             composable(
                 route = Routes.DETAIL,
                 arguments = listOf(navArgument(Routes.ARG_ID) { type = NavType.StringType })
-            ) { entry ->
-                val id = entry.arguments?.getString(Routes.ARG_ID).orEmpty()
+            ) {
                 CheckinDetailScreen(
-                    checkinId = id,
                     onBack = { navController.popBackStack() },
-                    onEdit = { navController.navigate(Routes.edit(id)) },
+                    onEdit = { id -> navController.navigate(Routes.edit(id)) },
                     onDeleted = { navController.popBackStack() }
                 )
             }
