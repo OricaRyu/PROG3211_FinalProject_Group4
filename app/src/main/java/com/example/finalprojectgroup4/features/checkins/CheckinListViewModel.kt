@@ -45,7 +45,11 @@ class CheckinListViewModel(private val savedStateHandle: SavedStateHandle) : Vie
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             // Loading until the first list arrives, so "No check-ins yet" doesn't flash
-            initialValue = CheckinListUiState(isLoading = true)
+            // (with the saved chip, so the right one shows selected while loading)
+            initialValue = CheckinListUiState(
+                selectedCategory = selectedCategory.value,
+                isLoading = true
+            )
         )
 
     /** Called when a filter chip is tapped. null selects "All". */

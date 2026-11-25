@@ -377,7 +377,7 @@ private fun formatDateTime(millis: Long): String {
 private fun CheckinDetailPreview() {
     FinalProjectGroup4Theme {
         CheckinDetailContent(
-            uiState = CheckinDetailUiState.Loaded(SampleCheckinStore.seedCheckins.first()),
+            uiState = CheckinDetailUiState.Loaded(SampleCheckinStore.previewCheckins.first()),
             onBack = {},
             onEdit = {},
             onConfirmDelete = {}

@@ -27,10 +27,13 @@ object SampleCheckinStore {
     private const val SAMPLE_USER = "local-user"
 
     /**
-     * The starting check-ins, as a plain list. Previews use this instead of `checkins.value`:
-     * reading a StateFlow's value inside a composable doesn't subscribe to it, so lint flags it.
+     * FOR @Preview FUNCTIONS ONLY. The starting check-ins as a fixed list: it never changes,
+     * so deletes don't show up in it. Screens and ViewModels must use [checkins] instead.
+     *
+     * Previews can't use `checkins.value`: reading a StateFlow's value inside a composable
+     * doesn't subscribe to it, so lint flags it.
      */
-    val seedCheckins: List<Checkin> =
+    val previewCheckins: List<Checkin> =
         listOf(
             Checkin(
                 id = "c1", userId = SAMPLE_USER, venueName = "Maple Bistro",
@@ -72,7 +75,7 @@ object SampleCheckinStore {
             )
         )
 
-    private val _checkins = MutableStateFlow(seedCheckins)
+    private val _checkins = MutableStateFlow(previewCheckins)
 
     /**
      * All check-ins, in the order of the list above (written newest first). Updates whenever

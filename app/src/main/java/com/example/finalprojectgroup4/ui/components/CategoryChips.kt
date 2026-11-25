@@ -3,7 +3,9 @@ package com.example.finalprojectgroup4.ui.components
 import androidx.annotation.StringRes
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Text
@@ -20,6 +22,8 @@ import com.example.finalprojectgroup4.data.model.Category
  *
  * @param selected the chosen category, or null for "All"
  * @param onSelect called with the tapped category, or null when "All" is tapped
+ * @param contentPadding space around the chips inside the scroll area. Use this rather than
+ *   a padding modifier for side margins, so overflowing chips can scroll to the screen edge.
  *
  * Kind: @Composable function. Owner: Track A (Sébastien).
  */
@@ -27,11 +31,14 @@ import com.example.finalprojectgroup4.data.model.Category
 fun CategoryChips(
     selected: Category?,
     onSelect: (Category?) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues()
 ) {
     // Scrolls sideways if the chips don't fit, for example with large text
     Row(
-        modifier = modifier.horizontalScroll(rememberScrollState()),
+        modifier = modifier
+            .horizontalScroll(rememberScrollState())
+            .padding(contentPadding),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         FilterChip(

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
@@ -19,7 +20,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -75,6 +80,18 @@ fun CheckinListContent(
     onCheckinClick: (checkinId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Hoisted so the list can jump back to the top when the filter changes
+    val listState = rememberLazyListState()
+    // The filter the list was last shown with. Saved so that coming back from Detail
+    // (same filter) keeps the scroll position; only a real chip change resets it.
+    var shownCategory by rememberSaveable { mutableStateOf(uiState.selectedCategory) }
+    LaunchedEffect(uiState.selectedCategory) {
+        if (uiState.selectedCategory != shownCategory) {
+            shownCategory = uiState.selectedCategory
+            listState.scrollToItem(0)
+        }
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = { SpotTopBar(title = stringResource(R.string.title_checkins)) },
@@ -92,18 +109,24 @@ fun CheckinListContent(
             CategoryChips(
                 selected = uiState.selectedCategory,
                 onSelect = onSelectCategory,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                modifier = Modifier.padding(vertical = 8.dp),
+                // Inside the scroll area, so overflowing chips scroll right to the screen edge
+                contentPadding = PaddingValues(horizontal = 16.dp)
             )
 
+            // Spinner and empty message share the same centred spot, so nothing jumps
             if (uiState.isLoading) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             } else if (uiState.checkins.isEmpty()) {
-                EmptyListMessage(hasAnyCheckins = uiState.hasAnyCheckins)
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    EmptyListMessage(hasAnyCheckins = uiState.hasAnyCheckins)
+                }
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
+                    state = listState,
                     // Extra bottom padding so the FAB never covers the last card
                     contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 88.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -136,7 +159,7 @@ private fun EmptyListMessage(hasAnyCheckins: Boolean) {
         textAlign = TextAlign.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 48.dp)
+            .padding(horizontal = 24.dp)
     )
 }
 
@@ -147,7 +170,7 @@ private fun CheckinListPreview() {
     FinalProjectGroup4Theme {
         CheckinListContent(
             uiState = CheckinListUiState(
-                checkins = SampleCheckinStore.seedCheckins,
+                checkins = SampleCheckinStore.previewCheckins,
                 selectedCategory = null,
                 hasAnyCheckins = true
             ),
@@ -164,7 +187,7 @@ private fun CheckinListFilteredPreview() {
     FinalProjectGroup4Theme {
         CheckinListContent(
             uiState = CheckinListUiState(
-                checkins = SampleCheckinStore.seedCheckins.filter { it.category == Category.EVENT },
+                checkins = SampleCheckinStore.previewCheckins.filter { it.category == Category.EVENT },
                 selectedCategory = Category.EVENT,
                 hasAnyCheckins = true
             ),
