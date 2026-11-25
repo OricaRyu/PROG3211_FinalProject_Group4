@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
  * Temporary id used by placeholder buttons so the Detail and Edit routes can be tested
  * before real check-ins exist. Remove once the screens show real data.
  */
-const val PLACEHOLDER_CHECKIN_ID = "c1" // Maple Bistro in SampleCheckinStore
+const val PLACEHOLDER_CHECKIN_ID = "c1" // Not a real check-in: Detail shows "not found" for it
 
 /**
  * Temporary screen body: a centred message with optional buttons underneath.

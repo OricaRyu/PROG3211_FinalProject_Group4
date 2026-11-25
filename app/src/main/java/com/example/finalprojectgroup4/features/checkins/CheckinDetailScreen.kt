@@ -55,7 +55,7 @@ import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finalprojectgroup4.R
 import com.example.finalprojectgroup4.data.model.Checkin
-import com.example.finalprojectgroup4.data.sample.SampleCheckinStore
+import com.example.finalprojectgroup4.ui.preview.previewCheckins
 import com.example.finalprojectgroup4.ui.components.RatingStars
 import com.example.finalprojectgroup4.ui.components.SpotTopBar
 import com.example.finalprojectgroup4.ui.components.SyncStatusChip
@@ -377,7 +377,7 @@ private fun formatDateTime(millis: Long): String {
 private fun CheckinDetailPreview() {
     FinalProjectGroup4Theme {
         CheckinDetailContent(
-            uiState = CheckinDetailUiState.Loaded(SampleCheckinStore.previewCheckins.first()),
+            uiState = CheckinDetailUiState.Loaded(previewCheckins.first()),
             onBack = {},
             onEdit = {},
             onConfirmDelete = {}

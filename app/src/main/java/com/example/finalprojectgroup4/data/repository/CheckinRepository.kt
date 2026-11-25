@@ -101,12 +101,15 @@ class CheckinRepository private constructor(
 
     /**
      * Saves the user's edits to [checkin]. The DAO only changes the editable fields,
-     * bumps updatedAt and flags it for sync. Returns false if it was missing, deleted or not theirs.
+     * bumps updatedAt and flags it for sync.
+     * Returns false if the check-in is missing, deleted or not the signed-in user's
+     * (for example, the user logged out or changed while the form was open).
      */
-    suspend fun update(checkin: Checkin): Boolean =
-        dao.update(
+    suspend fun update(checkin: Checkin): Boolean {
+        if (checkin.userId != _userId.value) return false
+        return dao.update(
             id = checkin.id,
-            userId = _userId.value,
+            userId = checkin.userId,
             venueId = checkin.venueId,
             venueName = checkin.venueName,
             address = checkin.address,
@@ -117,14 +120,17 @@ class CheckinRepository private constructor(
             note = checkin.note,
             now = System.currentTimeMillis()
         ) > 0
+    }
 
     /** Deletes a check-in (soft delete; the sync removes it for good afterwards). */
     suspend fun delete(id: String): Boolean =
         dao.markDeleted(id, _userId.value, System.currentTimeMillis()) > 0
 
     // ---------- For Track C's Firestore sync ----------
+    // markSynced and hardDelete use the row's own userId, not whoever is signed in now,
+    // so a push that finishes after a logout still updates the right row.
 
-    /** Rows not yet pushed to Firestore, including deleted ones. */
+    /** The signed-in user's rows not yet pushed to Firestore, including deleted ones. */
     suspend fun getUnsynced(): List<Checkin> = dao.getUnsynced(_userId.value)
 
     /**
@@ -132,8 +138,12 @@ class CheckinRepository private constructor(
      * edited or deleted during the push, this returns false and it stays unsynced for next time.
      */
     suspend fun markSynced(pushed: Checkin): Boolean =
-        dao.markSynced(pushed.id, _userId.value, pushedUpdatedAt = pushed.updatedAt) > 0
+        dao.markSynced(pushed.id, pushed.userId, pushedUpdatedAt = pushed.updatedAt) > 0
 
-    /** Removes a soft-deleted row for good, after its delete reached Firestore. */
-    suspend fun hardDelete(id: String): Boolean = dao.hardDelete(id, _userId.value) > 0
+    /**
+     * Removes a soft-deleted row for good, after its delete reached Firestore.
+     * Pass the copy that was pushed (from [getUnsynced]). Returns false if it wasn't soft-deleted.
+     */
+    suspend fun hardDelete(pushed: Checkin): Boolean =
+        dao.hardDelete(pushed.id, pushed.userId) > 0
 }
