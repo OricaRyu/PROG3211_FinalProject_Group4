@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.finalprojectgroup4.data.model.Checkin
+import androidx.room.TypeConverters
 
 /**
  * The app's Room database (file "spot.db"). Lists every table (entity) and hands out the DAOs.
@@ -17,6 +18,8 @@ import com.example.finalprojectgroup4.data.model.Checkin
     version = 1,
     exportSchema = false // no schema JSON files needed for this project
 )
+@TypeConverters(Converters::class) // stores Category safely (see Converters.kt)
+
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun checkinDao(): CheckinDao

@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.example.finalprojectgroup4.data.model.Category
 import com.example.finalprojectgroup4.data.model.Checkin
 import kotlinx.coroutines.flow.Flow
@@ -51,24 +50,59 @@ interface CheckinDao {
 
     // ---------- Update ----------
 
-    /** Replaces every field of an existing check-in. Returns how many rows changed (0 or 1). */
-    @Update
-    suspend fun update(checkin: Checkin): Int
+    /**
+     * Saves an edit. Only the fields the user can edit change; id, owner and createdAt never do.
+     * Always flags the row for sync, so no caller can forget.
+     * Returns rows changed: 0 if the row is missing, deleted, or not this user's.
+     */
+    @Query(
+        "UPDATE checkins SET venue_id = :venueId, venue_name = :venueName, address = :address, " +
+                "latitude = :latitude, longitude = :longitude, category = :category, rating = :rating, " +
+                "note = :note, updated_at = :now, synced = 0 " +
+                "WHERE id = :id AND user_id = :userId AND deleted = 0"
+    )
+    suspend fun update(
+        id: String,
+        userId: String,
+        venueId: String?,
+        venueName: String,
+        address: String?,
+        latitude: Double,
+        longitude: Double,
+        category: Category,
+        rating: Int,
+        note: String?,
+        now: Long
+    ): Int
 
-    /** Marks a row as pushed to Firestore. For Track C. */
-    @Query("UPDATE checkins SET synced = 1 WHERE id = :id")
-    suspend fun markSynced(id: String)
+    /**
+     * Marks a row as pushed to Firestore, but only if it was not edited or deleted while the push
+     * was running. [pushedUpdatedAt] is the updatedAt of the copy that was sent.
+     * Returns 0 when the row changed meanwhile: it stays unsynced and goes out on the next sync.
+     * For Track C.
+     */
+    @Query(
+        "UPDATE checkins SET synced = 1 " +
+                "WHERE id = :id AND user_id = :userId AND updated_at = :pushedUpdatedAt"
+    )
+    suspend fun markSynced(id: String, userId: String, pushedUpdatedAt: Long): Int
 
     // ---------- Delete ----------
 
-    /** Soft delete: hides the row everywhere and flags it for sync. Returns rows changed. */
+    /**
+     * Soft delete: hides the row everywhere and flags it for sync.
+     * Returns rows changed: deleting the same row twice returns 0, so it is not pushed again.
+     */
     @Query(
         "UPDATE checkins SET deleted = 1, synced = 0, updated_at = :now " +
-                "WHERE id = :id AND user_id = :userId"
+                "WHERE id = :id AND user_id = :userId AND deleted = 0"
     )
     suspend fun markDeleted(id: String, userId: String, now: Long): Int
 
-    /** Removes the row for good. Track C calls this after the delete reaches Firestore (#41). */
-    @Query("DELETE FROM checkins WHERE id = :id")
-    suspend fun hardDelete(id: String): Int
+    /**
+     * Removes a row for good, but only one that was already soft-deleted, so a live check-in
+     * can never be lost. Track C calls this after the delete reaches Firestore (#41).
+     */
+    @Query("DELETE FROM checkins WHERE id = :id AND user_id = :userId AND deleted = 1")
+    suspend fun hardDelete(id: String, userId: String): Int
 }
