@@ -38,7 +38,6 @@
     <!-- Temporary placeholder messages (remove as each screen is built) -->
     <string name="placeholder_map">The map of your check-ins and nearby venues will appear here.</string>
     <string name="placeholder_checkins">Your check-ins will be listed here.</string>
-    <string name="placeholder_detail">Details for check-in %1$s will appear here.</string>
     <string name="placeholder_form">The check-in form will appear here.</string>
     <string name="placeholder_login">The login form will appear here.</string>
     <string name="placeholder_signup">The sign up form will appear here.</string>
@@ -64,4 +63,15 @@
     <string name="format_subtitle">%1$s · %2$s</string>
     <string name="distance_meters">%1$d m</string>
     <string name="distance_km">%1$.1f km</string>
+
+    <!-- Check-in detail -->
+    <string name="detail_checked_in">Checked in %1$s</string>
+    <string name="detail_edited">Edited %1$s</string>
+    <string name="detail_note_label">Note</string>
+    <string name="detail_no_note">No note</string>
+    <string name="detail_not_found">This check-in no longer exists.</string>
+    <string name="cd_rating">Rated %1$d out of %2$d</string>
+    <string name="delete_dialog_title">Delete check-in?</string>
+    <string name="delete_dialog_message">%1$s will be removed. This can\'t be undone.</string>
+    <string name="action_cancel">Cancel</string>
 </resources>

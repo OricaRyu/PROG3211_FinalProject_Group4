@@ -130,9 +130,9 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
                 route = Routes.DETAIL,
                 arguments = listOf(navArgument(Routes.ARG_ID) { type = NavType.StringType })
             ) { entry ->
+                // The id is only needed here for Edit; CheckinDetailViewModel reads it from the route itself
                 val id = entry.arguments?.getString(Routes.ARG_ID).orEmpty()
                 CheckinDetailScreen(
-                    checkinId = id,
                     onBack = { navController.popBackStack() },
                     onEdit = { navController.navigate(Routes.edit(id)) },
                     onDeleted = { navController.popBackStack() }
