@@ -26,7 +26,11 @@ object SampleCheckinStore {
 
     private const val SAMPLE_USER = "local-user"
 
-    private val _checkins = MutableStateFlow(
+    /**
+     * The starting check-ins, as a plain list. Previews use this instead of `checkins.value`:
+     * reading a StateFlow's value inside a composable doesn't subscribe to it, so lint flags it.
+     */
+    val seedCheckins: List<Checkin> =
         listOf(
             Checkin(
                 id = "c1", userId = SAMPLE_USER, venueName = "Maple Bistro",
@@ -67,7 +71,8 @@ object SampleCheckinStore {
                 synced = true
             )
         )
-    )
+
+    private val _checkins = MutableStateFlow(seedCheckins)
 
     /**
      * All check-ins, in the order of the list above (written newest first). Updates whenever

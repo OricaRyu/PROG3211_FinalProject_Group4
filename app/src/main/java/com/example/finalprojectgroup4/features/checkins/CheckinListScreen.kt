@@ -147,7 +147,7 @@ private fun CheckinListPreview() {
     FinalProjectGroup4Theme {
         CheckinListContent(
             uiState = CheckinListUiState(
-                checkins = SampleCheckinStore.checkins.value,
+                checkins = SampleCheckinStore.seedCheckins,
                 selectedCategory = null,
                 hasAnyCheckins = true
             ),
@@ -164,7 +164,7 @@ private fun CheckinListFilteredPreview() {
     FinalProjectGroup4Theme {
         CheckinListContent(
             uiState = CheckinListUiState(
-                checkins = SampleCheckinStore.checkins.value.filter { it.category == Category.EVENT },
+                checkins = SampleCheckinStore.seedCheckins.filter { it.category == Category.EVENT },
                 selectedCategory = Category.EVENT,
                 hasAnyCheckins = true
             ),
