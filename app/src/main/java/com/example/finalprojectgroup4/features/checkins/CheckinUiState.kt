@@ -9,9 +9,11 @@ import com.example.finalprojectgroup4.validation.ValidationResult
  *
  * @property isEditing true on the Edit screen, false on New check-in
  * @property isLoading true while the check-in being edited is read from the database
- * @property notFound true when the check-in to edit doesn't exist anymore (for example, deleted)
+ * @property loadFailed true when reading the check-in hit a database error; the screen offers Retry
+ * @property notFound true when the check-in to edit doesn't exist anymore (for example, it was
+ *   deleted before or while the form was open)
  * @property isSaving true while the save runs; the Save button is disabled meanwhile
- * @property saveFailed true when the database refused the save; the form stays open to retry
+ * @property saveFailed true when the database hit an error while saving; the form stays open to retry
  * @property rating 0 means no star picked yet
  * @property venueError the error shown under its field, or null when the field is fine
  *   (same for ratingError and noteError)
@@ -21,6 +23,7 @@ import com.example.finalprojectgroup4.validation.ValidationResult
 data class CheckinUiState(
     val isEditing: Boolean = false,
     val isLoading: Boolean = false,
+    val loadFailed: Boolean = false,
     val notFound: Boolean = false,
     val isSaving: Boolean = false,
     val saveFailed: Boolean = false,

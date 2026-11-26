@@ -21,7 +21,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -47,6 +46,11 @@ import com.example.finalprojectgroup4.ui.components.labelRes
 import com.example.finalprojectgroup4.ui.theme.FinalProjectGroup4Theme
 import com.example.finalprojectgroup4.validation.ValidationResult
 import com.example.finalprojectgroup4.validation.Validators
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.semantics.Role
 
 /**
  * New / Edit check-in form. One screen handles both: the route decides which
@@ -83,6 +87,7 @@ fun NewCheckinScreen(
         onRatingChange = viewModel::onRatingChange,
         onNoteChange = viewModel::onNoteChange,
         onSave = viewModel::save,
+        onRetryLoad = viewModel::retryLoad,
         modifier = modifier
     )
 }
@@ -104,6 +109,7 @@ fun NewCheckinContent(
     onRatingChange: (Int) -> Unit,
     onNoteChange: (String) -> Unit,
     onSave: () -> Unit,
+    onRetryLoad: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val titleRes = if (uiState.isEditing) R.string.title_edit_checkin else R.string.title_new_checkin
@@ -136,6 +142,25 @@ fun NewCheckinContent(
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(horizontal = 24.dp)
                     )
+                }
+            }
+
+            // A database error while reading the check-in: offer Retry
+            uiState.loadFailed -> {
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(innerPadding).padding(horizontal = 24.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(R.string.error_load_failed),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    )
+                    TextButton(onClick = onRetryLoad) {
+                        Text(stringResource(R.string.action_retry))
+                    }
                 }
             }
 
@@ -282,12 +307,24 @@ private fun ErrorText(text: String) {
 /**
  * Five tappable stars: tapping star 3 sets the rating to 3.
  * Same colours as RatingStars: filled stars in primary, the rest in outline variant.
+ *
+ * The stars work as a radio group, so TalkBack says which one is selected
+ * ("Rate 3 out of 5, selected") instead of relying on colour alone.
  */
 @Composable
 private fun RatingPicker(rating: Int, onRatingChange: (Int) -> Unit) {
-    Row {
+    Row(Modifier.selectableGroup()) {
         for (star in Validators.MIN_RATING..Validators.MAX_RATING) {
-            IconButton(onClick = { onRatingChange(star) }) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp) // minimum touch target
+                    .selectable(
+                        selected = star == rating,
+                        onClick = { onRatingChange(star) },
+                        role = Role.RadioButton
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
                 Icon(
                     imageVector = Icons.Filled.Star,
                     // Each star says what tapping it does, e.g. "Rate 3 out of 5"
@@ -313,7 +350,7 @@ private fun NewCheckinPreview() {
         NewCheckinContent(
             uiState = CheckinUiState(),
             onClose = {}, onVenueNameChange = {}, onAddressChange = {}, onCategoryChange = {},
-            onRatingChange = {}, onNoteChange = {}, onSave = {}
+            onRatingChange = {}, onNoteChange = {}, onSave = {}, onRetryLoad = {}
         )
     }
 }
@@ -332,7 +369,7 @@ private fun EditCheckinPreview() {
                 note = "Great pasta, will come back with the team."
             ),
             onClose = {}, onVenueNameChange = {}, onAddressChange = {}, onCategoryChange = {},
-            onRatingChange = {}, onNoteChange = {}, onSave = {}
+            onRatingChange = {}, onNoteChange = {}, onSave = {}, onRetryLoad = {}
         )
     }
 }
@@ -350,7 +387,19 @@ private fun CheckinErrorsPreview() {
                 )
             ),
             onClose = {}, onVenueNameChange = {}, onAddressChange = {}, onCategoryChange = {},
-            onRatingChange = {}, onNoteChange = {}, onSave = {}
+            onRatingChange = {}, onNoteChange = {}, onSave = {}, onRetryLoad = {}
+        )
+    }
+}
+
+@Preview(name = "Load failed", showBackground = true)
+@Composable
+private fun CheckinLoadFailedPreview() {
+    FinalProjectGroup4Theme {
+        NewCheckinContent(
+            uiState = CheckinUiState(isEditing = true, loadFailed = true),
+            onClose = {}, onVenueNameChange = {}, onAddressChange = {}, onCategoryChange = {},
+            onRatingChange = {}, onNoteChange = {}, onSave = {}, onRetryLoad = {}
         )
     }
 }
