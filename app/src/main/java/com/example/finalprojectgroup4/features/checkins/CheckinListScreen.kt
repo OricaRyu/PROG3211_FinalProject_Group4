@@ -35,7 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finalprojectgroup4.R
 import com.example.finalprojectgroup4.data.model.Category
-import com.example.finalprojectgroup4.data.sample.SampleCheckinStore
+import com.example.finalprojectgroup4.ui.preview.previewCheckins
 import com.example.finalprojectgroup4.ui.components.CategoryChips
 import com.example.finalprojectgroup4.ui.components.CheckinCard
 import com.example.finalprojectgroup4.ui.components.SpotTopBar
@@ -170,7 +170,7 @@ private fun CheckinListPreview() {
     FinalProjectGroup4Theme {
         CheckinListContent(
             uiState = CheckinListUiState(
-                checkins = SampleCheckinStore.previewCheckins,
+                checkins = previewCheckins,
                 selectedCategory = null,
                 hasAnyCheckins = true
             ),
@@ -187,7 +187,7 @@ private fun CheckinListFilteredPreview() {
     FinalProjectGroup4Theme {
         CheckinListContent(
             uiState = CheckinListUiState(
-                checkins = SampleCheckinStore.previewCheckins.filter { it.category == Category.EVENT },
+                checkins = previewCheckins.filter { it.category == Category.EVENT },
                 selectedCategory = Category.EVENT,
                 hasAnyCheckins = true
             ),
