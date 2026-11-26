@@ -58,6 +58,11 @@
     <string name="category_event">Event</string>
     <string name="category_other">Other</string>
 
+    <!-- Check-in validation errors (Track B) -->
+    <string name="error_venue_required">Choose or enter a venue.</string>
+    <string name="error_rating_range">Pick a rating from %1$d to %2$d stars.</string>
+    <string name="error_note_too_long">The note can be at most %1$d characters.</string>
+
     <!-- Formats -->
     <string name="format_subtitle">%1$s · %2$s</string>
     <string name="distance_meters">%1$d m</string>

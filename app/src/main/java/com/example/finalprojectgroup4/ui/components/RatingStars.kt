@@ -15,9 +15,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.finalprojectgroup4.R
+import com.example.finalprojectgroup4.validation.Validators.MAX_RATING
 
-/** Highest possible rating. */
-private const val MAX_RATING = 5
 
 /**
  * Shows a 1 to 5 star rating: filled stars in the primary colour, empty ones in outline variant.
