@@ -37,7 +37,6 @@
 
     <!-- Temporary placeholder messages (remove as each screen is built) -->
     <string name="placeholder_map">The map of your check-ins and nearby venues will appear here.</string>
-    <string name="placeholder_form">The check-in form will appear here.</string>
     <string name="placeholder_login">The login form will appear here.</string>
     <string name="placeholder_signup">The sign up form will appear here.</string>
 
@@ -57,6 +56,16 @@
     <string name="category_restaurant">Restaurant</string>
     <string name="category_event">Event</string>
     <string name="category_other">Other</string>
+
+    <!-- Check-in form (Track B) -->
+    <string name="label_venue">Venue</string>
+    <string name="label_address">Address (optional)</string>
+    <string name="label_category">Category</string>
+    <string name="label_rating">Rating</string>
+    <string name="label_note">Note (optional)</string>
+    <string name="format_note_counter">%1$d / %2$d</string>
+    <string name="cd_rate_stars">Rate %1$d out of %2$d</string>
+    <string name="error_save_failed">Couldn\'t save the check-in. Try again.</string>
 
     <!-- Check-in validation errors (Track B) -->
     <string name="error_venue_required">Choose or enter a venue.</string>
