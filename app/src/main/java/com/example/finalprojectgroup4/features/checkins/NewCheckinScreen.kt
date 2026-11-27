@@ -172,7 +172,9 @@ fun NewCheckinContent(
                 onRatingChange = onRatingChange,
                 onNoteChange = onNoteChange,
                 onSave = onSave,
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .consumeWindowInsets(innerPadding)
             )
         }
     }
