@@ -141,7 +141,6 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
 
             composable(Routes.NEW) {
                 NewCheckinScreen(
-                    checkinId = null,
                     onClose = { navController.popBackStack() },
                     onSaved = { navController.popBackStack() }
                 )
@@ -150,9 +149,8 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
             composable(
                 route = Routes.EDIT,
                 arguments = listOf(navArgument(Routes.ARG_ID) { type = NavType.StringType })
-            ) { entry ->
+            ) {
                 NewCheckinScreen(
-                    checkinId = entry.arguments?.getString(Routes.ARG_ID),
                     onClose = { navController.popBackStack() },
                     onSaved = { navController.popBackStack() }
                 )
